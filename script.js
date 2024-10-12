@@ -5,45 +5,19 @@ const port = 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
-// Roman numeral conversion function
-function convertToRoman(num) {
-    const romanNumerals = [
-        ['M', 1000],
-        ['CM', 900],
-        ['D', 500],
-        ['CD', 400],
-        ['C', 100],
-        ['XC', 90],
-        ['L', 50],
-        ['XL', 40],
-        ['X', 10],
-        ['IX', 9],
-        ['V', 5],
-        ['IV', 4],
-        ['I', 1]
-    ];
+// Import the conversion function from script.js
+const { convertToRoman } = require('./script');
 
-    let result = '';
-    romanNumerals.forEach(([roman, value]) => {
-        while (num >= value) {
-            result += roman;
-            num -= value;
-        }
-    });
-
-    return result;
-}
-
-// POST endpoint to handle the conversion
+// API route to convert number to Roman numeral
 app.post('/romanConverter', (req, res) => {
-    const { input } = req.body;
+    const { num } = req.body;
 
-    if (typeof input !== 'number' || input < 1 || input > 3999) {
-        return res.status(400).json({ error: 'Invalid input. Enter a number between 1 and 3999.' });
+    if (typeof num !== 'number' || num < 1 || num > 100000) {
+        return res.status(400).json({ error: 'Please enter a valid number between 1 and 100000.' });
     }
 
-    const roman = convertToRoman(input);
-    res.json({ roman });
+    const romanNumeral = convertToRoman(num);
+    res.json({ romanNumeral });
 });
 
 // Start the server
