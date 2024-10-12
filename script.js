@@ -1,26 +1,48 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+function convertToRoman(num) {
+  	const obj = {
+       0:['M',1000], 
+        1:['CM',900], // 900
+        2:['D', 500], 
+        3:['CD',400], // 400
+        4:['C', 100], 
+        5:['XC',90],  // 90
+        6:['L', 50], 
+        7:['XL',40],  // 40
+        8:['X', 10], 
+        9:['IX',9],   // 9
+        10:['V', 5], 
+        11:['IV',4],  // 4
+        12:['I', 1]
+    };
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+  //your code here
+let result='';
 
-// Import the conversion function from script.js
-const { convertToRoman } = require('./script');
+       
+        for(let i=0;i<Object.keys(obj).length;i++){
+           
+            while(num>=obj[i][1]){
+                num=num-obj[i][1];
+                result=result+obj[i][0];
+               
+            }
+            
+        }
+        
+        return result;
+        
+}
+// You can test your code by running the above function and printing it to console by pressing the run button at the top. To run it with input 36, uncomment the following line
 
-// API route to convert number to Roman numeral
-app.post('/romanConverter', (req, res) => {
-    const { num } = req.body;
+console.log(convertToRoman(36));
 
-    if (typeof num !== 'number' || num < 1 || num > 100000) {
-        return res.status(400).json({ error: 'Please enter a valid number between 1 and 100000.' });
-    }
 
-    const romanNumeral = convertToRoman(num);
-    res.json({ romanNumeral });
-});
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+
+// do not edit below this line
+module.exports = convertToRoman
+
+const app = require("./index.js");
+app.listen(3000, () => {
+  console.log('server started');
 });
