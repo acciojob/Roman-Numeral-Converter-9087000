@@ -1,10 +1,12 @@
-function convertToRoman() {
-    const num = document.getElementById('numberInput').value;
-    if (num < 1 || num > 3999 || isNaN(num)) {
-        document.getElementById('result').innerText = 'Please enter a valid number (1 - 3999)';
-        return;
-    }
+const express = require('express');
+const app = express();
+const port = 3000;
 
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Roman numeral conversion function
+function convertToRoman(num) {
     const romanNumerals = [
         ['M', 1000],
         ['CM', 900],
@@ -22,14 +24,29 @@ function convertToRoman() {
     ];
 
     let result = '';
-    let number = parseInt(num);
-
     romanNumerals.forEach(([roman, value]) => {
-        while (number >= value) {
+        while (num >= value) {
             result += roman;
-            number -= value;
+            num -= value;
         }
     });
 
-    document.getElementById('result').innerText = result;
+    return result;
 }
+
+// POST endpoint to handle the conversion
+app.post('/romanConverter', (req, res) => {
+    const { input } = req.body;
+
+    if (typeof input !== 'number' || input < 1 || input > 3999) {
+        return res.status(400).json({ error: 'Invalid input. Enter a number between 1 and 3999.' });
+    }
+
+    const roman = convertToRoman(input);
+    res.json({ roman });
+});
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
